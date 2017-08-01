@@ -1,0 +1,10 @@
+language: C++
+before_install:
+  - sudo add-apt-repository --yes ppa:canonical-qt5-edgers/ubuntu1204-qt5
+  - sudo apt-get update -qq
+  - sudo apt-get install qtdeclarative5-dev qt5-default
+env:
+  - QT_VERSION=5
+script:
+  - qmake
+  - make
