@@ -1,0 +1,3 @@
+[submodule "includes/pluginsdk"]
+	path = includes/pluginsdk
+	url = https://github.com/svenpaulsen/ts3client-pluginsdk
