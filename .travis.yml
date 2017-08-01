@@ -2,7 +2,7 @@ language: C++
 dist: trusty
 sudo: required
 before_install:
-  - sudo add-apt-repository --yes ppa:canonical-qt5-edgers/ubuntu1404-qt5
+  - sudo add-apt-repository --yes ppa:canonical-qt5-edgers/qt5-proper
   - sudo apt-get update -qq
   - sudo apt-get install qtdeclarative5-dev qt5-default
 env:
