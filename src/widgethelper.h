@@ -33,6 +33,9 @@ class WidgetHelper : public QObject, public Singleton<WidgetHelper>
     QDockWidget* m_dockInfo;
     QDockWidget* m_dockChat;
 
+    QByteArray m_dockGmtry;
+    QByteArray m_chatGmtry;
+
     QMap<QWidget*, QWidget*> m_widgets;
 
     WidgetHelper();

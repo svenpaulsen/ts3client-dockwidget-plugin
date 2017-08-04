@@ -266,6 +266,9 @@ void WidgetHelper::onServerTabChanged(int index)
             }
         }
     }
+
+    m_dockChat->restoreGeometry(m_chatGmtry);
+    m_dockInfo->restoreGeometry(m_dockGmtry);
 }
 
 /**
@@ -275,7 +278,8 @@ void WidgetHelper::onServerTabClicked(int index)
 {
     if(!m_docked || !m_hooked) return;
 
-    // not implemented
+    m_chatGmtry = m_dockChat->saveGeometry();
+    m_dockGmtry = m_dockInfo->saveGeometry();
 
     Q_UNUSED(index)
 }
@@ -287,7 +291,8 @@ void WidgetHelper::onServerTabDoubleClicked(int index)
 {
     if(!m_docked || !m_hooked) return;
 
-    // not implemented
+    m_chatGmtry = m_dockChat->saveGeometry();
+    m_dockGmtry = m_dockInfo->saveGeometry();
 
     Q_UNUSED(index)
 }
