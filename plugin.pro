@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT     += widgets
+CONFIG += plugin
 CONFIG += c++11
 
 VERSION  = _VERSION_
