@@ -193,7 +193,7 @@ unsigned int WidgetHelper::start()
     m_dockChat->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     m_dockChat->setObjectName("chatAreaDock");
 
-    m_mainWindow->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::GroupedDragging);
+    m_mainWindow->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
     m_mainWindow->addDockWidget(Qt::RightDockWidgetArea, m_dockInfo);
     m_mainWindow->addDockWidget(Qt::BottomDockWidgetArea, m_dockChat);
 
