@@ -105,6 +105,7 @@ unsigned int WidgetHelper::unhook()
 
     m_hooked = false;
 
+    delete m_stacked;
     delete m_dockInfo;
     delete m_dockChat;
 
@@ -128,10 +129,10 @@ unsigned int WidgetHelper::backup()
 
     conf.setValue("mainGeometry", m_mainWindow->saveGeometry());
     conf.setValue("mainWinState", m_mainWindow->saveState());
-    conf.setValue("chatGeometry", m_dockChat->saveGeometry());
     conf.setValue("chatFloating", m_dockChat->isFloating());
-    conf.setValue("infoGeometry", m_dockInfo->saveGeometry());
+    conf.setValue("chatGeometry", m_dockChat->saveGeometry());
     conf.setValue("infoFloating", m_dockInfo->isFloating());
+    conf.setValue("infoGeometry", m_dockInfo->saveGeometry());
 
     m_loaded = false;
 
@@ -157,10 +158,13 @@ unsigned int WidgetHelper::restore()
 
         m_mainWindow->restoreGeometry(conf.value("mainGeometry", m_mainWindow->saveGeometry()).toByteArray());
         m_mainWindow->restoreState(conf.value("mainWinState", m_mainWindow->saveState()).toByteArray());
-        m_dockChat->restoreGeometry(conf.value("chatGeometry", m_dockChat->saveGeometry()).toByteArray());
         m_dockChat->setFloating(conf.value("chatFloating", m_dockChat->isFloating()).toBool());
-        m_dockInfo->restoreGeometry(conf.value("infoGeometry", m_dockInfo->saveGeometry()).toByteArray());
+        m_dockChat->restoreGeometry(conf.value("chatGeometry", m_dockChat->saveGeometry()).toByteArray());
         m_dockInfo->setFloating(conf.value("infoFloating", m_dockInfo->isFloating()).toBool());
+        m_dockInfo->restoreGeometry(conf.value("infoGeometry", m_dockInfo->saveGeometry()).toByteArray());
+
+        m_dockChat->show();
+        m_dockInfo->show();
     }
 
     m_loaded = true;
@@ -177,7 +181,9 @@ unsigned int WidgetHelper::start()
 
     m_dockInfo = new QDockWidget(qApp->translate("MainWindow", "Information"));
     m_dockChat = new QDockWidget(qApp->translate("ChatSetupDialog", "Chat"));
+    m_stacked  = new QStackedWidget(m_dockInfo);
 
+    m_dockInfo->setWidget(m_stacked);
     m_dockInfo->setAllowedAreas(Qt::AllDockWidgetAreas);
     m_dockInfo->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     m_dockInfo->setObjectName("infoFrameDock");
@@ -187,6 +193,7 @@ unsigned int WidgetHelper::start()
     m_dockChat->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     m_dockChat->setObjectName("chatAreaDock");
 
+    m_mainWindow->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::GroupedDragging);
     m_mainWindow->addDockWidget(Qt::RightDockWidgetArea, m_dockInfo);
     m_mainWindow->addDockWidget(Qt::BottomDockWidgetArea, m_dockChat);
 
@@ -194,8 +201,10 @@ unsigned int WidgetHelper::start()
     {
         if(QWidget* infoFrame = serverView->findChild<QWidget*>())
         {
-            m_dockInfo->setWidget(infoFrame);
             m_widgets.insert(serverView, infoFrame);
+
+            m_stacked->addWidget(infoFrame);
+            m_stacked->setCurrentWidget(infoFrame);
 
             connect(serverView, &QObject::destroyed, this, &WidgetHelper::onServerTabDestroyed);
         }
@@ -253,22 +262,21 @@ void WidgetHelper::onServerTabChanged(int index)
     {
         if(m_widgets.contains(serverView))
         {
-            m_dockInfo->setWidget(m_widgets[serverView]);
+            m_stacked->setCurrentWidget(m_widgets[serverView]);
         }
         else
         {
             if(QWidget* infoFrame = serverView->findChild<QWidget*>())
             {
-                m_dockInfo->setWidget(infoFrame);
                 m_widgets.insert(serverView, infoFrame);
+
+                m_stacked->addWidget(infoFrame);
+                m_stacked->setCurrentWidget(infoFrame);
 
                 connect(serverView, &QObject::destroyed, this, &WidgetHelper::onServerTabDestroyed);
             }
         }
     }
-
-    m_dockChat->restoreGeometry(m_chatGmtry);
-    m_dockInfo->restoreGeometry(m_dockGmtry);
 }
 
 /**
@@ -278,8 +286,7 @@ void WidgetHelper::onServerTabClicked(int index)
 {
     if(!m_docked || !m_hooked) return;
 
-    m_chatGmtry = m_dockChat->saveGeometry();
-    m_dockGmtry = m_dockInfo->saveGeometry();
+    // not implemented
 
     Q_UNUSED(index)
 }
@@ -291,8 +298,7 @@ void WidgetHelper::onServerTabDoubleClicked(int index)
 {
     if(!m_docked || !m_hooked) return;
 
-    m_chatGmtry = m_dockChat->saveGeometry();
-    m_dockGmtry = m_dockInfo->saveGeometry();
+    // not implemented
 
     Q_UNUSED(index)
 }
@@ -306,6 +312,8 @@ void WidgetHelper::onServerTabDestroyed(QObject* obj)
 
     if(m_widgets.contains((QWidget*) obj))
     {
+        m_stacked->removeWidget(m_widgets[(QWidget*) obj]);
+
         delete m_widgets[(QWidget*) obj];
         m_widgets.remove((QWidget*) obj);
     }

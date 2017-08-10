@@ -4,8 +4,8 @@
  * Copyright (c) Sven Paulsen. All rights reserved.
  */
 
-#ifndef UIHELPER_H
-#define UIHELPER_H
+#ifndef WIDGETHELPER_H
+#define WIDGETHELPER_H
 
 #include "shared.h"
 #include "singleton.h"
@@ -33,10 +33,8 @@ class WidgetHelper : public QObject, public Singleton<WidgetHelper>
     QDockWidget* m_dockInfo;
     QDockWidget* m_dockChat;
 
-    QByteArray m_dockGmtry;
-    QByteArray m_chatGmtry;
-
     QMap<QWidget*, QWidget*> m_widgets;
+    QStackedWidget*          m_stacked;
 
     WidgetHelper();
     ~WidgetHelper();
@@ -76,4 +74,4 @@ public slots:
     void onChatTabDoubleClicked(int index);
 };
 
-#endif // UIHELPER_H
+#endif // WIDGETHELPER_H
