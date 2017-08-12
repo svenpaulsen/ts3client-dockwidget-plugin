@@ -201,9 +201,7 @@ unsigned int WidgetHelper::start()
     {
         if(QWidget* infoFrame = serverView->findChild<QWidget*>())
         {
-            m_widgets.insert(serverView, infoFrame);
-
-            m_stacked->addWidget(infoFrame);
+            m_widgets.insert(serverView, m_stacked->addWidget(infoFrame));
             m_stacked->setCurrentWidget(infoFrame);
 
             connect(serverView, &QObject::destroyed, this, &WidgetHelper::onServerTabDestroyed);
@@ -229,12 +227,16 @@ unsigned int WidgetHelper::stop()
 
     m_splitter->addWidget(m_chatArea);
 
-    for(QMap<QWidget*, QWidget*>::const_iterator i = m_widgets.begin(); i != m_widgets.end(); ++i)
+    for(QMap<QWidget*, int>::const_iterator i = m_widgets.begin(); i != m_widgets.end(); ++i)
     {
+        QWidget* infoFrame = m_stacked->widget(i.value());
+
+        m_stacked->removeWidget(infoFrame);
+
         if(m_mainWindow->isVisible())
         {
-            i.value()->setParent(i.key());
-            i.value()->show();
+            infoFrame->setParent(i.key());
+            infoFrame->show();
         }
     }
 
@@ -262,15 +264,13 @@ void WidgetHelper::onServerTabChanged(int index)
     {
         if(m_widgets.contains(serverView))
         {
-            m_stacked->setCurrentWidget(m_widgets[serverView]);
+            m_stacked->setCurrentWidget(m_stacked->widget(m_widgets[serverView]));
         }
         else
         {
             if(QWidget* infoFrame = serverView->findChild<QWidget*>())
             {
-                m_widgets.insert(serverView, infoFrame);
-
-                m_stacked->addWidget(infoFrame);
+                m_widgets.insert(serverView, m_stacked->addWidget(infoFrame));
                 m_stacked->setCurrentWidget(infoFrame);
 
                 connect(serverView, &QObject::destroyed, this, &WidgetHelper::onServerTabDestroyed);
@@ -312,10 +312,12 @@ void WidgetHelper::onServerTabDestroyed(QObject* obj)
 
     if(m_widgets.contains((QWidget*) obj))
     {
-        m_stacked->removeWidget(m_widgets[(QWidget*) obj]);
+        QWidget* infoFrame = m_stacked->widget(m_widgets[(QWidget*) obj]);
 
-        delete m_widgets[(QWidget*) obj];
         m_widgets.remove((QWidget*) obj);
+        m_stacked->removeWidget(infoFrame);
+
+        delete infoFrame;
     }
 }
 
