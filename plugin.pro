@@ -5,8 +5,7 @@
 #-------------------------------------------------
 
 QT     += widgets
-CONFIG += plugin
-CONFIG += c++11
+CONFIG += c++14
 
 VERSION  = _VERSION_
 TARGET   = dockwidget_plugin
