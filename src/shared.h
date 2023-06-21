@@ -22,7 +22,7 @@
 #include "ts3_functions.h"
 
 #define PLUGIN_NAME "Dock Widgets"
-#define PLUGIN_API  23
+#define PLUGIN_API  26
 #define BUFFSIZE_L  512
 #define BUFFSIZE_M  256
 #define BUFFSIZE_D  128

@@ -4,7 +4,7 @@
  * Copyright (c) Sven Paulsen. All rights reserved.
  */
 
-#include "plugin.h"
+#include "dockwidget.h"
 #include "widgethelper.h"
 
 /**
