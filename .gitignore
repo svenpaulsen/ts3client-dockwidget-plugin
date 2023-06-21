@@ -176,9 +176,6 @@ DocProject/Help/*.hhp
 DocProject/Help/Html2
 DocProject/Help/html
 
-# Click-Once directory
-publish/
-
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
@@ -484,3 +481,4 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+resource.h
